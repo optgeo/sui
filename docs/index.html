@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" href="https://optgeo.github.io/optbv-charites/maplibre-gl.css"/>
+<script src="https://optgeo.github.io/optbv-charites/maplibre-gl.js"></script>
+</head>
+<body>
+<style>
+body { margin:0; padding:0; font-family: 'Roboto', sans-serif; color: #333333}
+#map { top:0; height: 100vh; width: 100vw; position: fixed; z-index: 0; }
+</style>
+<div id="map"></div>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const map = new maplibregl.Map({
+    container: "map",
+    style: "https://optgeo.github.io/optbv-charites/maplibre.json",
+    hash: true, 
+    center: [139.4362, 38.1307],
+    zoom: 14,
+    minZoom: 4,
+    maxZoom: 22
+  })
+  map.addControl(new maplibregl.NavigationControl())
+  map.addControl(new maplibregl.ScaleControl({
+    maxWidth: 200, unit: "metric"
+  }))
+  map.on("load", async() => {
+    map.addSource("sui", {
+      type: "raster",
+      tiles: [
+        "https://cyberjapandata.gsi.go.jp/xyz/20220804rain_0804dansaizu/{z}/{x}/{y}.png"
+      ],
+      minzoom: 2,
+      maxzoom: 15,
+      tileSize: 256,
+      attribution: "地理院"
+    })
+    map.addLayer({
+      id: "sui",
+      type: "raster",
+      source: "sui",
+      minzoom: 4,
+      maxzoom: 22
+    }, "送電線破線")
+  })
+})
+</script>
+</body>
